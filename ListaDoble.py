@@ -1,3 +1,4 @@
+# Implementación de una lista doblemente enlazada en Python
 class NodoDoble:
     def __init__(self, dato):
         self.dato = dato

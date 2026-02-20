@@ -19,7 +19,9 @@ class ListaDoble:
     def esta_vacia(self):
         return self.cabeza is None
 
-    # Insertar al final
+    # -----------------------------
+    # INSERTAR (se deja iterativo)
+    # -----------------------------
     def insertar_final(self, dato):
         nuevo = NodoDoble(dato)
 
@@ -31,63 +33,73 @@ class ListaDoble:
             nuevo.anterior = self.cola
             self.cola = nuevo
 
-    # Mostrar canciones
+    # -----------------------------
+    # MOSTRAR RECURSIVO
+    # -----------------------------
     def mostrar(self):
         if self.esta_vacia():
             print("📭 Lista vacía")
+        else:
+            print("\n🎵 LISTA DE CANCIONES:")
+            self._mostrar_recursivo(self.cabeza, 1)
+            print()
+
+    def _mostrar_recursivo(self, nodo, contador):
+        if nodo is None:
             return
 
-        print("\n🎵 LISTA DE CANCIONES:")
-        actual = self.cabeza
-        contador = 1
+        print(f"{contador}. {nodo.dato}")
+        self._mostrar_recursivo(nodo.siguiente, contador + 1)
 
-        while actual:
-            print(f"{contador}. {actual.dato}")
-            actual = actual.siguiente
-            contador += 1
-        print()
-
-    # Buscar canción por nombre
+    # -----------------------------
+    # BUSCAR RECURSIVO
+    # -----------------------------
     def buscar_por_nombre(self, nombre):
-        actual = self.cabeza
+        return self._buscar_recursivo(self.cabeza, nombre)
 
-        while actual:
-            if actual.dato.nombre.lower() == nombre.lower():
-                return actual
-            actual = actual.siguiente
+    def _buscar_recursivo(self, nodo, nombre):
+        if nodo is None:
+            return None
 
-        return None
+        if nodo.dato.nombre.lower() == nombre.lower():
+            return nodo
 
-    # Eliminar por nombre
+        return self._buscar_recursivo(nodo.siguiente, nombre)
+
+    # -----------------------------
+    # ELIMINAR RECURSIVO
+    # -----------------------------
     def eliminar_por_nombre(self, nombre):
-        actual = self.buscar_por_nombre(nombre)
+        nodo = self.buscar_por_nombre(nombre)
 
-        if actual is None:
+        if nodo is None:
             return False
 
-        # Si es el único nodo
-        if actual == self.cabeza and actual == self.cola:
+        # único nodo
+        if nodo == self.cabeza and nodo == self.cola:
             self.cabeza = None
             self.cola = None
 
-        # Si es el primero
-        elif actual == self.cabeza:
-            self.cabeza = actual.siguiente
+        # primero
+        elif nodo == self.cabeza:
+            self.cabeza = nodo.siguiente
             self.cabeza.anterior = None
 
-        # Si es el último
-        elif actual == self.cola:
-            self.cola = actual.anterior
+        # último
+        elif nodo == self.cola:
+            self.cola = nodo.anterior
             self.cola.siguiente = None
 
-        # Si está en el medio
+        # en medio
         else:
-            actual.anterior.siguiente = actual.siguiente
-            actual.siguiente.anterior = actual.anterior
+            nodo.anterior.siguiente = nodo.siguiente
+            nodo.siguiente.anterior = nodo.anterior
 
         return True
 
-    # Reproducir canción
+    # -----------------------------
+    # REPRODUCIR (usa buscar recursivo)
+    # -----------------------------
     def reproducir(self, nombre):
         nodo = self.buscar_por_nombre(nombre)
 
@@ -104,7 +116,7 @@ class ListaDoble:
 class Cancion:
     def __init__(self, nombre, duracion):
         self.nombre = nombre
-        self.duracion = duracion  # segundos
+        self.duracion = duracion
 
     def tiempo_formato(self):
         minutos = self.duracion // 60
@@ -124,8 +136,8 @@ while True:
     print("\n" + "=" * 50)
     print("🎵 REPRODUCTOR DE MÚSICA 🎵")
     print("1️⃣  Agregar canción")
-    print("2️⃣  Mostrar canciones")
-    print("3️⃣  Buscar canción")
+    print("2️⃣  Mostrar canciones (recursivo)")
+    print("3️⃣  Buscar canción (recursivo)")
     print("4️⃣  Eliminar canción")
     print("5️⃣  Reproducir canción")
     print("6️⃣  Salir")
@@ -139,7 +151,7 @@ while True:
         try:
             duracion = int(input("Duración en segundos: "))
             if duracion <= 0:
-                print("⚠️ La duración debe ser mayor que 0")
+                print("⚠️ Duración inválida")
                 continue
         except ValueError:
             print("⚠️ Ingrese un número válido")
@@ -157,24 +169,23 @@ while True:
         resultado = playlist.buscar_por_nombre(nombre)
 
         if resultado:
-            print("✅ Canción encontrada:", resultado.dato)
+            print("✅ Encontrada:", resultado.dato)
         else:
             print("❌ No encontrada")
 
     elif opcion == "4":
         nombre = input("Nombre a eliminar: ")
-
         if playlist.eliminar_por_nombre(nombre):
-            print("🗑️ Canción eliminada")
+            print("🗑️ Eliminada correctamente")
         else:
-            print("❌ Canción no encontrada")
+            print("❌ No encontrada")
 
     elif opcion == "5":
         nombre = input("Nombre a reproducir: ")
         playlist.reproducir(nombre)
 
     elif opcion == "6":
-        print("👋 Gracias por usar el reproductor")
+        print("👋 Hasta luego")
         break
 
     else:
