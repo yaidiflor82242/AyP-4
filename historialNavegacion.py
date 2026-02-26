@@ -45,7 +45,7 @@ class Historial:
 
         actual.siguiente = self._eliminar_rapidas_rec(actual.siguiente, minimo)
 
-        if actual.tiempo > minimo:
+        if actual.tiempo < minimo:
             return actual.siguiente
 
         return actual
